@@ -1,0 +1,122 @@
+import csv
+import random
+
+
+class Islander:
+def __init__(self, name, gender, personality, attraction_score):
+self.name = name
+self.gender = gender
+self.personality = personality
+self.attraction_score = attraction_score
+self.partner = None
+
+def describe(self):
+return f"{self.name} ({self.gender}) - Personality: {self.personality}, Attraction Score: {self.attraction_score}"
+
+
+class LoveIsland:
+def __init__(self):
+self.islanders = []
+self.couples = []
+
+def add_islander(self, islander):
+self.islanders.append(islander)
+
+def add_islanders_from_file(self, filename):
+"""Loads islanders from a CSV file."""
+try:
+with open(filename, mode="r") as file:
+reader = csv.DictReader(file)
+for row in reader:
+self.add_islander(
+Islander(
+name=row["Name"],
+gender=row["Gender"],
+personality=row["Personality"],
+attraction_score=int(row["Attraction Score"]),
+)
+)
+print(f"\n** Successfully added islanders from {filename}! **")
+except FileNotFoundError:
+print(f"\n** Error: File '{filename}' not found. **")
+except KeyError:
+print("\n** Error: Make sure the CSV contains 'Name', 'Gender', 'Personality', and 'Attraction Score' columns. **")
+
+def manual_add_islander(self):
+"""Manually add islanders during runtime."""
+name = input("Enter islander's name: ")
+gender = input("Enter islander's gender (Male/Female): ")
+personality = input("Enter islander's personality: ")
+try:
+attraction_score = int(input("Enter islander's attraction score (1-100): "))
+self.add_islander(
+Islander(name=name, gender=gender, personality=personality, attraction_score=attraction_score)
+)
+print(f"** {name} has been added to the villa! **")
+except ValueError:
+print("** Error: Attraction score must be a number between 1 and 100. **")
+
+def pair_islanders(self):
+"""Pairs the islanders into couples."""
+random.shuffle(self.islanders)
+self.couples = [
+(self.islanders[i], self.islanders[i + 1])
+for i in range(0, len(self.islanders) - 1, 2)
+]
+for pair in self.couples:
+pair[0].partner = pair[1]
+pair[1].partner = pair[0]
+
+def add_bombshell(self):
+"""Manually add a bombshell islander."""
+print("\n** A Bombshell Enters the Villa! **")
+self.manual_add_islander()
+
+def show_status(self):
+"""Displays the current islanders and couples."""
+print("\n** Current Islanders **")
+for islander in self.islanders:
+print(islander.describe())
+print("\n** Current Couples **")
+for couple in self.couples:
+print(f"{couple[0].name} ❤️ {couple[1].name}")
+
+
+# Main Simulation
+if __name__ == "__main__":
+# Create the Love Island instance
+show = LoveIsland()
+
+# Load islanders from a CSV file
+print("** Welcome to Love Island Simulator! **")
+use_file = input("Do you have a file with islanders? (yes/no): ").strip().lower()
+if use_file == "yes":
+file_name = input("Enter the filename (e.g., islanders.csv): ").strip()
+show.add_islanders_from_file(file_name)
+else:
+print("\n** Let's manually add the original islanders! **")
+num_islanders = int(input("How many original islanders do you want to add? "))
+for _ in range(num_islanders):
+show.manual_add_islander()
+
+# Pair the islanders initially
+show.pair_islanders()
+show.show_status()
+
+# Simulate adding bombshells and new events
+while True:
+print("\n** What would you like to do next? **")
+print("1. Add a bombshell")
+print("2. Show status")
+print("3. Exit simulation")
+choice = input("Enter your choice (1/2/3): ").strip()
+if choice == "1":
+show.add_bombshell()
+elif choice == "2":
+show.show_status()
+elif choice == "3":
+print("\n** Exiting Love Island Simulator. Goodbye! **")
+break
+else:
+print("** Invalid choice. Please try again. **")
+
